@@ -12,30 +12,62 @@ class SlowlyMovingWidgetsField extends StatefulWidget {
 }
 
 class Dude {
-  double left;
-  double top;
+  double width = 50;
+  double height = 50;
+  double left = -1;
+  double top = -1;
   double xdelta;
   double ydelta;
   Color color;
 }
 
 class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
+  final r = new Random();
+
+  double width = -1;
+  double height = -1;
+
+  double accelerate = .01;
+
   int i = 0;
   List<Dude> list = [];
   Container back = Container(color: Colors.red);
 
   @override
   Widget build(BuildContext context) {
+    if (height < 0) {
+      width = MediaQuery.of(context).size.width;
+      height = MediaQuery.of(context).size.height;
+      list.forEach((d) {
+        if (d.left < 0) {
+          d.left = r.nextInt((width - d.width).toInt()).toDouble();
+          d.top = r.nextInt((height - d.height).toInt()).toDouble();
+        }
+      });
+    }
+
 //    print("build");
     List<Widget> l = [back];
     list.forEach((d) {
 //      print("dude: left=${d.left}");
       l.add(Positioned(
-          child: Container(color: d.color, height: 100, width: 100),
+          child: Container(color: d.color, height: d.height, width: d.width),
           left: d.left,
           top: d.top));
-      d.left += d.xdelta;
-      d.top += d.ydelta;
+      d.left += d.xdelta * accelerate;
+      d.top += d.ydelta * accelerate;
+
+      if (d.left < 0 || d.left + d.width > width) {
+        d.xdelta *= -1;
+      }
+
+      if (d.top < 0 || d.top + d.height > height) {
+        d.ydelta *= -1;
+      }
+
+      if (accelerate < 1.0) {
+        accelerate += 0.005;
+      }
     });
     return Stack(
       children: l,
@@ -50,67 +82,20 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
   @override
   void initState() {
     super.initState();
-//    list = [
-//      Positioned(
-//        child: Container(
-////          width: 100,
-////          height: 100,
-//          color: Colors.red,
-//        ),
-//        left: 0,
-//        top: 0
-//      ),
-////      Positioned(
-////          child: Container(
-////            width: 80,
-////            height: 80,
-////            color: Colors.green,
-////          ),
-////          left: 0,
-////          top: 0),
-////      Positioned(
-////          child: Container(
-////            width: 80,
-////            height: 80,
-////            color: Colors.yellow,
-////          ),
-////          left: 100,
-////          top: 100),
-//    ];
-//
-//    for (int i = 0; i < 1; i++) {
-////      list.forEach((w) {
-////        w.key = UniqueKey()
-////      });
-//      list.add(Positioned(
-//          child: Container(
-//            color: Colors.black,
-//            width: 80,
-//            height: 80,
-//          ),
-//          left: 0,
-//          key: UniqueKey(),
-//          top: 0));
-//    }
 
-    var r = new Random();
     for (int i = 0; i < 10; i++) {
       Dude d = Dude();
       d.color = Color.fromARGB(
           255, 200 + r.nextInt(56), 200 + r.nextInt(56), 200 + r.nextInt(56));
-      d.left = 0;
-      d.top = 0;
-      d.xdelta = r.nextDouble() / 100;
-      d.ydelta = r.nextDouble() / 100;
+      d.xdelta = (0.5 - r.nextDouble()) / 1;
+      d.ydelta = (0.5 - r.nextDouble()) / 1;
       list.add(d);
     }
 
     Timer.periodic(Duration(milliseconds: 1000 ~/ 30), (timer) {
-//      print("i=$i");
       setState(() {
         i++;
       });
-//      list[1].left = i;
     });
   }
 }
