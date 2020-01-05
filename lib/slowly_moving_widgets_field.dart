@@ -19,6 +19,16 @@ class Dude {
   double xdelta;
   double ydelta;
   Color color;
+
+  double get right => left + width;
+  double get bottom => top + height;
+
+  bool impact(Dude d) {
+    return d.left > left &&
+        d.left + d.width < right &&
+        d.top > top &&
+        d.top + d.height < bottom;
+  }
 }
 
 class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
@@ -65,6 +75,22 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
         d.ydelta *= -1;
       }
 
+      list.forEach((d2) {
+        if (d != d2) {
+//          print("diff");
+
+          if (d.impact(d2)) {
+            print("impact!");
+
+            d.xdelta *= -1;
+            d.ydelta *= -1;
+
+            d2.xdelta *= -1;
+            d2.ydelta *= -1;
+          }
+        }
+      });
+
       if (accelerate < 1.0) {
         accelerate += 0.005;
       }
@@ -83,7 +109,7 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
   void initState() {
     super.initState();
 
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 20; i++) {
       Dude d = Dude();
       d.color = Color.fromARGB(
           255, 200 + r.nextInt(56), 200 + r.nextInt(56), 200 + r.nextInt(56));
