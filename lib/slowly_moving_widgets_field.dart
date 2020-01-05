@@ -100,12 +100,12 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
           255, 200 + r.nextInt(56), 200 + r.nextInt(56), 200 + r.nextInt(56));
       d.left = 0;
       d.top = 0;
-      d.xdelta = r.nextDouble();
-      d.ydelta = r.nextDouble();
+      d.xdelta = r.nextDouble() / 100;
+      d.ydelta = r.nextDouble() / 100;
       list.add(d);
     }
 
-    Timer.periodic(Duration(milliseconds: 100 ~/ 60), (timer) {
+    Timer.periodic(Duration(milliseconds: 1000 ~/ 30), (timer) {
 //      print("i=$i");
       setState(() {
         i++;
