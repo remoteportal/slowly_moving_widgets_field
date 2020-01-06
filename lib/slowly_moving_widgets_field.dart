@@ -18,7 +18,7 @@ final r = new Random();
  * - specify speed
  */
 class SlowlyMovingWidgetsField extends StatefulWidget {
-  final List<Dude> list;
+  final List<Moving> list;
   final double collisionAmount;
 
   SlowlyMovingWidgetsField({@required this.list, this.collisionAmount})
@@ -29,8 +29,8 @@ class SlowlyMovingWidgetsField extends StatefulWidget {
       _SlowlyMovingWidgetsFieldState();
 }
 
-class Dude {
-  Dude({@required this.child, @required this.width, @required this.height})
+class Moving {
+  Moving({@required this.child, @required this.width, @required this.height})
       : assert(child != null),
         assert(width != null),
         assert(height != null);
@@ -48,18 +48,18 @@ class Dude {
 
   double get bottom => top + height;
 
-  bool hit(Dude d) {
+  bool hit(Moving d) {
     return (d.left > left && d.left < right ||
             d.right > left && d.right < right) &&
         (d.top > top && d.top < bottom || d.bottom > top && d.bottom < bottom);
   }
 
-  bool hitx(Dude d) {
+  bool hitx(Moving d) {
     return hit(d) && (d.xdelta > 0 && xdelta < 0 || xdelta > 0 && d.xdelta < 0);
 //    return false;
   }
 
-  bool hity(Dude d) {
+  bool hity(Moving d) {
     return hit(d) && (d.ydelta > 0 && ydelta < 0 || ydelta > 0 && d.ydelta < 0);
 //    return false;
   }
@@ -67,7 +67,7 @@ class Dude {
   String toString() => "$id";
 
   String toDump() =>
-      "dude $id: w=$width h=$height: l=$left r=$right t=$top b=$bottom (xd=$xdelta yd=$ydelta)";
+      "moving $id: w=$width h=$height: l=$left r=$right t=$top b=$bottom (xd=$xdelta yd=$ydelta)";
 }
 
 class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
@@ -85,13 +85,13 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
   int hityCnt = 0;
   int colorRotate = 0;
   int beats = 0;
-  List<Dude> list = [];
+  List<Moving> list = [];
   Container back = Container(color: Colors.white);
 
   @override
   Widget build(BuildContext context) {
     if (height < 0) {
-      print("RUN 2 ***********  init: count=${widget.list.length}");
+//      print("initialize: count=${widget.list.length}");
       width = MediaQuery.of(context).size.width;
       height = MediaQuery.of(context).size.height;
 
@@ -99,8 +99,8 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
       assert(height > 100);
 
       for (int i = 0; i < widget.list.length; i++) {
-        print("placing dude #$i in field");
-        Dude d = widget.list[i];
+//        print("placing moving #$i in field");
+        Moving d = widget.list[i];
 
         d.xdelta = (0.5 - (r.nextDouble() * 3)) /
             1; //TODO: ensure not too close to zero
@@ -108,7 +108,7 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
 
         int attempt = 0;
 
-        print("${d.toDump()}");
+//        print("${d.toDump()}");
 
         while (true) {
           // keep trying until find a spot to create the new widget in a place that isn't already occupied by existing widget
@@ -134,7 +134,7 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
 
           if (add) {
             d.id = "$i";
-            print("created: $d");
+//            print("created: $d");
             list.add(d);
             break;
           }
@@ -145,7 +145,7 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
     // create new list of Positioned() widgets FOR EACH BUILD.
     List<Widget> l = [back];
     list.forEach((d) {
-//      print("dude: left=${d.left}");
+//      print("moving: left=${d.left}");
       l.add(Positioned(child: d.child, left: d.left, top: d.top));
 
       d.left += d.xdelta * accelerate;
@@ -218,7 +218,7 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
       if (accelerate > 1.0) {
         accelerated = true;
         accelerate = 1.0;
-        print("accelerated: createHits=$createHits longestRun=$longestRun");
+//        print("accelerated: createHits=$createHits longestRun=$longestRun");
       } else {
         accelerate += 0.01;
       }
