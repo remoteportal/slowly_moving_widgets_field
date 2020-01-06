@@ -23,8 +23,18 @@ class Dude {
   double get right => left + width;
   double get bottom => top + height;
 
-  bool impact(Dude d) {
-    return d.left > left && d.left < right && d.top > top && d.top < bottom;
+  bool hit(Dude d) {
+    return d.left > left && d.left < right ||
+        d.right > left && d.right < right && d.top > top && d.top < bottom ||
+        d.bottom > top && d.bottom < bottom;
+  }
+
+  bool hitx(Dude d) {
+    return hit(d) && (d.xdelta > 0 && xdelta < 0 || xdelta > 0 && d.xdelta < 0);
+  }
+
+  bool hity(Dude d) {
+    return hit(d) && (d.ydelta > 0 && ydelta < 0 || ydelta > 0 && d.ydelta < 0);
   }
 }
 
@@ -37,7 +47,9 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
   double accelerate = .01;
 
   int cnt = 0;
-  int impactCnt = 0;
+  int hitCnt = 0;
+  int hitxCnt = 0;
+  int hityCnt = 0;
   int i = 0;
   List<Dude> list = [];
   Container back = Container(color: Colors.red);
@@ -79,14 +91,30 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
           cnt++;
 //          print("diff $cnt");
 
-          if (d.impact(d2)) {
-            impactCnt++;
-            print("impact $impactCnt");
+//          if (d.hit(d2)) {
+//            hitCnt++;
+//            print("hit $hitCnt");
+//
+//            d.xdelta *= -1;
+//            d.ydelta *= -1;
+//
+//            d2.xdelta *= -1;
+//            d2.ydelta *= -1;
+//          }
+
+          if (d.hitx(d2)) {
+            hitxCnt++;
+//            print("hitx $hitxCnt");
 
             d.xdelta *= -1;
-            d.ydelta *= -1;
-
             d2.xdelta *= -1;
+          }
+
+          if (d.hity(d2)) {
+            hityCnt++;
+//            print("hity $hityCnt");
+
+            d.ydelta *= -1;
             d2.ydelta *= -1;
           }
         }
@@ -111,7 +139,9 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
     super.initState();
 
     for (int i = 0; i < 10; i++) {
+      int attempt = 0;
       while (true) {
+        attempt++;
         Dude d = Dude();
         d.color = Color.fromARGB(
             255, 200 + r.nextInt(56), 200 + r.nextInt(56), 200 + r.nextInt(56));
@@ -121,8 +151,8 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
         bool add = true;
         if (list.length > 0) {
           list.forEach((d2) {
-            if (d.impact(d2)) {
-              print("creation impact!");
+            if (d.hit(d2)) {
+              print("attempt $attempt: creation hit");
               add = false;
             }
           });
