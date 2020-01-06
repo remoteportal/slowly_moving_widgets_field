@@ -10,6 +10,7 @@ void main() {
   // with widgets in the test environment.
   testWidgets('test the thing!', (WidgetTester tester) async {
     await tester.pumpWidget(Directionality(
-        child: SlowlyMovingWidgetsField(), textDirection: TextDirection.ltr));
+        child: SlowlyMovingWidgetsField(list: null),
+        textDirection: TextDirection.ltr));
   });
 }
