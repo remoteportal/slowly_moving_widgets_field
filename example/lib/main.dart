@@ -16,7 +16,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final List<Widget> list = [];
+  final List<Dude> list = [];
 
   @override
   Widget build(BuildContext context) {
@@ -55,11 +55,15 @@ class _MyAppState extends State<MyApp> {
       colorRotate++;
       colorRotate %= 3;
 
-      list.add(Container(
-          child: Text("$i", style: TextStyle(fontSize: 40)),
-          color: color,
-          height: 100,
-          width: 200));
+      list.add(Dude(
+        child: Container(
+            child: Text("$i", style: TextStyle(fontSize: 40)),
+            color: color,
+            height: 50,
+            width: 100),
+        height: 50,
+        width: 100,
+      ));
     }
   }
 }

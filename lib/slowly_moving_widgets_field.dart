@@ -9,12 +9,13 @@ import 'package:meta/meta.dart';
 final r = new Random();
 
 /*
- * returns a Stack().
+ * Returns a Stack() which contains all the "magic."
  *
- * add a slight random on every impact
+ * TODO:
+ * - add a slight random on every impact
  */
 class SlowlyMovingWidgetsField extends StatefulWidget {
-  final List<Widget> list;
+  final List<Dude> list;
 
   SlowlyMovingWidgetsField({@required this.list}) : assert(list != null);
 
@@ -24,11 +25,14 @@ class SlowlyMovingWidgetsField extends StatefulWidget {
 }
 
 class Dude {
-  Dude(this.widget);
+  Dude({@required this.child, @required this.width, @required this.height})
+      : assert(child != null),
+        assert(width != null),
+        assert(height != null);
 
-  Widget widget;
-  double width = 50; //HELP
-  double height = 50;
+  Container child;
+  double width;
+  double height;
   double left = -1;
   double top = -1;
   double xdelta;
@@ -36,6 +40,7 @@ class Dude {
   String id;
 
   double get right => left + width;
+
   double get bottom => top + height;
 
   bool hit(Dude d) {
@@ -55,12 +60,15 @@ class Dude {
   }
 
   String toString() => "$id";
-  String toDump() => "dude $id: l=$left r=$right t=$top b=$bottom";
+
+  String toDump() =>
+      "dude $id: w=$width h=$height: l=$left r=$right t=$top b=$bottom (xd=$xdelta yd=$ydelta)";
 }
 
 class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
   double width = -1;
-  double height = -1;
+  double height =
+      -1; // don't know size of "moving field" until context is passed during build()
 
   double accelerate = .01;
   bool accelerated = false;
@@ -78,20 +86,30 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
   @override
   Widget build(BuildContext context) {
     if (height < 0) {
+      print("RUN 2 ***********  init: count=${widget.list.length}");
       width = MediaQuery.of(context).size.width;
       height = MediaQuery.of(context).size.height;
 
-      for (int i = 0; i < list.length; i++) {
+      assert(width > 100); //ARB//TODO//TRAVESTY
+      assert(height > 100);
+
+      for (int i = 0; i < widget.list.length; i++) {
+        print("placing dude #$i in field");
+        Dude d = widget.list[i];
+
+        d.xdelta = (0.5 - (r.nextDouble() * 3)) /
+            1; //TODO: ensure not too close to zero
+        d.ydelta = (0.5 - (r.nextDouble() * 0.5)) / 1;
+
         int attempt = 0;
+
+        print("${d.toDump()}");
+
         while (true) {
+          // keep trying until find a spot to create the new widget in a place that isn't already occupied by existing widget
           if (++attempt > longestRun) {
             longestRun = attempt;
           }
-
-          Dude d = Dude(widget.list[i]);
-
-          d.xdelta = (0.5 - (r.nextDouble() * 3)) / 1;
-          d.ydelta = (0.5 - (r.nextDouble() * 0.5)) / 1;
 
           d.left = r.nextInt((width - d.width).toInt()).toDouble();
           d.top = r.nextInt((height - d.height).toInt()).toDouble();
@@ -111,7 +129,7 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
 
           if (add) {
             d.id = "$i";
-//            print("created: $d");
+            print("created: $d");
             list.add(d);
             break;
           }
@@ -119,10 +137,11 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
       }
     }
 
+    // create new list of Positioned() widgets FOR EACH BUILD.
     List<Widget> l = [back];
     list.forEach((d) {
 //      print("dude: left=${d.left}");
-      l.add(Positioned(child: d.widget, left: d.left, top: d.top));
+      l.add(Positioned(child: d.child, left: d.left, top: d.top));
 
       d.left += d.xdelta * accelerate;
       d.top += d.ydelta * accelerate;
@@ -210,7 +229,7 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
 
     Timer.periodic(Duration(milliseconds: 1000 ~/ 30), (timer) {
       setState(() {
-        beats++;
+        beats++; // force rebuilds 30 frames per second
         if (beats % 10000 == 0) {
           print("10K beats");
         }
