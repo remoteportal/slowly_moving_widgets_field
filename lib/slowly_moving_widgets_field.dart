@@ -27,11 +27,6 @@ class Dude {
 
   double get bottom => top + height;
 
-//  void position(double s_width, double s_height) {
-//    left = r.nextInt((s_width - width).toInt()).toDouble();
-//    top = r.nextInt((s_height - height).toInt()).toDouble();
-//  }
-
   bool hit(Dude d) {
     return (d.left > left && d.left < right ||
             d.right > left && d.right < right) &&
@@ -39,13 +34,13 @@ class Dude {
   }
 
   bool hitx(Dude d) {
-//    return hit(d) && (d.xdelta > 0 && xdelta < 0 || xdelta > 0 && d.xdelta < 0);
-    return false;
+    return hit(d) && (d.xdelta > 0 && xdelta < 0 || xdelta > 0 && d.xdelta < 0);
+//    return false;
   }
 
   bool hity(Dude d) {
-//    return hit(d) && (d.ydelta > 0 && ydelta < 0 || ydelta > 0 && d.ydelta < 0);
-    return false;
+    return hit(d) && (d.ydelta > 0 && ydelta < 0 || ydelta > 0 && d.ydelta < 0);
+//    return false;
   }
 
   String toString() => "dude $id: l=$left r=$right t=$top b=$bottom";
@@ -56,8 +51,10 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
   double height = -1;
 
   double accelerate = .01;
+  bool accelerated = false;
 
-  int cnt = 0;
+  int createHits = 0;
+  int longestRun = 0;
   int hitCnt = 0;
   int hitxCnt = 0;
   int hityCnt = 0;
@@ -72,10 +69,13 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
       width = MediaQuery.of(context).size.width;
       height = MediaQuery.of(context).size.height;
 
-      for (int i = 0; i < 30; i++) {
+      for (int i = 0; i < 20; i++) {
         int attempt = 0;
         while (true) {
           attempt++;
+          if (attempt > longestRun) {
+            longestRun = attempt;
+          }
 
           Dude d = Dude();
           switch (colorRotate) {
@@ -95,10 +95,9 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
 
           colorRotate++;
           colorRotate %= 3;
-          d.xdelta = (0.5 - (r.nextDouble() * 3)) / 1;
-          d.ydelta = (0.5 - (r.nextDouble() * 0.5)) / 1;
+          d.xdelta = (0.5 - (r.nextDouble() * 3)) / 10;
+          d.ydelta = (0.5 - (r.nextDouble() * 0.5)) / 10;
 
-//          d.position(width, height);
           d.left = r.nextInt((width - d.width).toInt()).toDouble();
           d.top = r.nextInt((height - d.height).toInt()).toDouble();
 
@@ -116,7 +115,7 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
 
           if (add) {
             d.id = "$i";
-            print("created: $d");
+//            print("created: $d");
             list.add(d);
             break;
           }
@@ -132,6 +131,7 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
           child: Container(color: d.color, height: d.height, width: d.width),
           left: d.left,
           top: d.top));
+
       d.left += d.xdelta * accelerate;
       d.top += d.ydelta * accelerate;
 
@@ -145,40 +145,45 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
 
       list.forEach((d2) {
         if (d != d2) {
-          cnt++;
-//          print("diff $cnt");
+          if (d.hit(d2)) {
+            if (d.xdelta > 0 && d2.xdelta < 0) {
+              d.xdelta *= -1;
+              d2.xdelta *= -1;
+              print("x: both");
+            } else if ((d.xdelta > 0 &&
+                    d2.xdelta > 0 &&
+                    d.xdelta > d2.xdelta) ||
+                (d.xdelta < 0 && d2.xdelta < 0 && d.xdelta < d2.xdelta)) {
+              print("x: d > d2");
+              d.xdelta *= -1;
+            } else if (d.xdelta > 0 && d2.xdelta > 0 && d.xdelta < d2.xdelta) {
+              print("x: d2 > d");
+              d2.xdelta *= -1;
+            }
 
-//          if (d.hit(d2)) {
-//            hitCnt++;
-//            print("hit $hitCnt");
-//
-//            d.xdelta *= -1;
-//            d.ydelta *= -1;
-//
-//            d2.xdelta *= -1;
-//            d2.ydelta *= -1;
-//          }
-
-          if (d.hitx(d2)) {
-            hitxCnt++;
-//            print("hitx $hitxCnt");
-
-            d.xdelta *= -1;
-            d2.xdelta *= -1;
-          } else if (d.hity(d2)) {
-            hityCnt++;
-//            print("hity $hityCnt");
-
-            d.ydelta *= -1;
-            d2.ydelta *= -1;
+            if ((d.ydelta > 0 && d2.ydelta > 0 && d.ydelta > d2.ydelta) ||
+                (d.ydelta < 0 && d2.ydelta < 0 && d.ydelta < d2.ydelta)) {
+              print("y: d > d2");
+              d.ydelta *= -1;
+            } else if (d.ydelta > 0 && d2.ydelta > 0 && d.ydelta < d2.ydelta) {
+              print("y: d2 > d");
+              d2.ydelta *= -1;
+            }
           }
         }
       });
-
-      if (accelerate < 1.0) {
-        accelerate += 0.005;
-      }
     });
+
+    if (!accelerated) {
+      if (accelerate > 1.0) {
+        accelerated = true;
+        accelerate = 1.0;
+        print("accelerated: createHits=$createHits longestRun=$longestRun");
+      } else {
+        accelerate += 0.01;
+      }
+    }
+
     return Stack(
       children: l,
     );
