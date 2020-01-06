@@ -12,12 +12,17 @@ final r = new Random();
  * Returns a Stack() which contains all the "magic."
  *
  * TODO:
- * - add a slight random on every impact
+ * - add a configurable amount of slight random on every impact
+ * - specify how much overlap to allow before bounce
+ * - perhaps allow some to float over others
+ * - specify speed
  */
 class SlowlyMovingWidgetsField extends StatefulWidget {
   final List<Dude> list;
+  final double collisionAmount;
 
-  SlowlyMovingWidgetsField({@required this.list}) : assert(list != null);
+  SlowlyMovingWidgetsField({@required this.list, this.collisionAmount})
+      : assert(list != null);
 
   @override
   _SlowlyMovingWidgetsFieldState createState() =>
@@ -115,7 +120,7 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
           d.top = r.nextInt((height - d.height).toInt()).toDouble();
 
           bool add = true;
-          if (list.length > 0) {
+          if (widget.collisionAmount != null && list.length > 0) {
             list.forEach((d2) {
 //              print("cr: $d2");
               if (d.hit(d2)) {
@@ -146,41 +151,47 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
       d.left += d.xdelta * accelerate;
       d.top += d.ydelta * accelerate;
 
-      list.forEach((d2) {
-        if (d != d2) {
-          if (d.hit(d2)) {
-            if (d.xdelta > 0 && d2.xdelta < 0) {
-              d.xdelta *= -1;
-              d2.xdelta *= -1;
+      if (widget.collisionAmount != null) {
+        list.forEach((d2) {
+          if (d != d2) {
+            if (d.hit(d2)) {
+              if (d.xdelta > 0 && d2.xdelta < 0) {
+                d.xdelta *= -1;
+                d2.xdelta *= -1;
 //              print("x: both $d $d2");
-            } else if ((d.xdelta > 0 &&
-                    d2.xdelta > 0 &&
-                    d.xdelta > d2.xdelta) ||
-                (d.xdelta < 0 && d2.xdelta < 0 && d.xdelta < d2.xdelta)) {
+              } else if ((d.xdelta > 0 &&
+                      d2.xdelta > 0 &&
+                      d.xdelta > d2.xdelta) ||
+                  (d.xdelta < 0 && d2.xdelta < 0 && d.xdelta < d2.xdelta)) {
 //              print("x: $d > $d2");
-              d.xdelta *= -1;
-            } else if (d.xdelta > 0 && d2.xdelta > 0 && d.xdelta < d2.xdelta) {
+                d.xdelta *= -1;
+              } else if (d.xdelta > 0 &&
+                  d2.xdelta > 0 &&
+                  d.xdelta < d2.xdelta) {
 //              print("x: $d2 > $d");
-              d2.xdelta *= -1;
-            }
+                d2.xdelta *= -1;
+              }
 
-            if (d.ydelta > 0 && d2.ydelta < 0) {
-              d.ydelta *= -1;
-              d2.ydelta *= -1;
+              if (d.ydelta > 0 && d2.ydelta < 0) {
+                d.ydelta *= -1;
+                d2.ydelta *= -1;
 //              print("y: both $d $d2");
-            } else if ((d.ydelta > 0 &&
-                    d2.ydelta > 0 &&
-                    d.ydelta > d2.ydelta) ||
-                (d.ydelta < 0 && d2.ydelta < 0 && d.ydelta < d2.ydelta)) {
+              } else if ((d.ydelta > 0 &&
+                      d2.ydelta > 0 &&
+                      d.ydelta > d2.ydelta) ||
+                  (d.ydelta < 0 && d2.ydelta < 0 && d.ydelta < d2.ydelta)) {
 //              print("y: $d > $d2");
-              d.ydelta *= -1;
-            } else if (d.ydelta > 0 && d2.ydelta > 0 && d.ydelta < d2.ydelta) {
+                d.ydelta *= -1;
+              } else if (d.ydelta > 0 &&
+                  d2.ydelta > 0 &&
+                  d.ydelta < d2.ydelta) {
 //              print("y: $d2 > $d");
-              d2.ydelta *= -1;
+                d2.ydelta *= -1;
+              }
             }
           }
-        }
-      });
+        });
+      }
 
       if (d.left < 0) {
         d.left = 0;

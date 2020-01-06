@@ -1,8 +1,9 @@
 # slowing_moving_widgets_field
 
-**under construction**
-
 Pass in a list of widgets and the slowing_moving_widgets_field moves them around the screen like an asteroids game, bouncing off each other.
+
+if collisionAmount is null then widgets float on top of each other (DON'T bounce).
+if collisionAmount is non-null then widgets will bounce when they hit each other (collision detection).  But, this is buggy (see below).
  
 
 # TODO
