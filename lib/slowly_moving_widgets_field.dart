@@ -24,10 +24,7 @@ class Dude {
   double get bottom => top + height;
 
   bool impact(Dude d) {
-    return d.left > left &&
-        d.left + d.width < right &&
-        d.top > top &&
-        d.top + d.height < bottom;
+    return d.left > left && d.left < right && d.top > top && d.top < bottom;
   }
 }
 
@@ -39,6 +36,7 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
 
   double accelerate = .01;
 
+  int cnt = 0;
   int i = 0;
   List<Dude> list = [];
   Container back = Container(color: Colors.red);
@@ -77,7 +75,8 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
 
       list.forEach((d2) {
         if (d != d2) {
-//          print("diff");
+          cnt++;
+//          print("diff $cnt");
 
           if (d.impact(d2)) {
             print("impact!");
@@ -109,12 +108,12 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
   void initState() {
     super.initState();
 
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 10; i++) {
       Dude d = Dude();
       d.color = Color.fromARGB(
           255, 200 + r.nextInt(56), 200 + r.nextInt(56), 200 + r.nextInt(56));
-      d.xdelta = (0.5 - r.nextDouble()) / 1;
-      d.ydelta = (0.5 - r.nextDouble()) / 1;
+      d.xdelta = (0.5 - (r.nextDouble() + 0.1)) / 1;
+      d.ydelta = (0.5 - (r.nextDouble() + 0.1)) / 1;
       list.add(d);
     }
 
