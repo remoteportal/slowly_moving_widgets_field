@@ -37,6 +37,7 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
   double accelerate = .01;
 
   int cnt = 0;
+  int impactCnt = 0;
   int i = 0;
   List<Dude> list = [];
   Container back = Container(color: Colors.red);
@@ -79,7 +80,8 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
 //          print("diff $cnt");
 
           if (d.impact(d2)) {
-            print("impact!");
+            impactCnt++;
+            print("impact $impactCnt");
 
             d.xdelta *= -1;
             d.ydelta *= -1;
@@ -109,12 +111,28 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
     super.initState();
 
     for (int i = 0; i < 10; i++) {
-      Dude d = Dude();
-      d.color = Color.fromARGB(
-          255, 200 + r.nextInt(56), 200 + r.nextInt(56), 200 + r.nextInt(56));
-      d.xdelta = (0.5 - (r.nextDouble() + 0.1)) / 1;
-      d.ydelta = (0.5 - (r.nextDouble() + 0.1)) / 1;
-      list.add(d);
+      while (true) {
+        Dude d = Dude();
+        d.color = Color.fromARGB(
+            255, 200 + r.nextInt(56), 200 + r.nextInt(56), 200 + r.nextInt(56));
+        d.xdelta = (0.5 - (r.nextDouble() * 2 + 0.1)) / 1;
+        d.ydelta = (0.5 - (r.nextDouble() + 0.1)) / 1;
+
+        bool add = true;
+        if (list.length > 0) {
+          list.forEach((d2) {
+            if (d.impact(d2)) {
+              print("creation impact!");
+              add = false;
+            }
+          });
+        }
+
+        if (add) {
+          list.add(d);
+          break;
+        }
+      }
     }
 
     Timer.periodic(Duration(milliseconds: 1000 ~/ 30), (timer) {
