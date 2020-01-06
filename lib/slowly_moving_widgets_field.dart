@@ -43,7 +43,8 @@ class Dude {
 //    return false;
   }
 
-  String toString() => "dude $id: l=$left r=$right t=$top b=$bottom";
+  String toString() => "$id";
+  String toDump() => "dude $id: l=$left r=$right t=$top b=$bottom";
 }
 
 class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
@@ -69,11 +70,10 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
       width = MediaQuery.of(context).size.width;
       height = MediaQuery.of(context).size.height;
 
-      for (int i = 0; i < 20; i++) {
+      for (int i = 0; i < 10; i++) {
         int attempt = 0;
         while (true) {
-          attempt++;
-          if (attempt > longestRun) {
+          if (++attempt > longestRun) {
             longestRun = attempt;
           }
 
@@ -95,6 +95,7 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
 
           colorRotate++;
           colorRotate %= 3;
+
           d.xdelta = (0.5 - (r.nextDouble() * 3)) / 10;
           d.ydelta = (0.5 - (r.nextDouble() * 0.5)) / 10;
 
@@ -106,6 +107,7 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
             list.forEach((d2) {
 //              print("cr: $d2");
               if (d.hit(d2)) {
+                createHits++;
 //                print("$i attempt $attempt: $d");
 //                print("$i         $attempt: $d2");
                 add = false;
@@ -123,25 +125,20 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
       }
     }
 
-//    print("build");
     List<Widget> l = [back];
     list.forEach((d) {
 //      print("dude: left=${d.left}");
       l.add(Positioned(
-          child: Container(color: d.color, height: d.height, width: d.width),
+          child: Container(
+              child: Text("$d", style: TextStyle(fontSize: 40)),
+              color: d.color,
+              height: d.height,
+              width: d.width),
           left: d.left,
           top: d.top));
 
       d.left += d.xdelta * accelerate;
       d.top += d.ydelta * accelerate;
-
-      if (d.left < 0 || d.left + d.width > width) {
-        d.xdelta *= -1;
-      }
-
-      if (d.top < 0 || d.top + d.height > height) {
-        d.ydelta *= -1;
-      }
 
       list.forEach((d2) {
         if (d != d2) {
@@ -149,29 +146,55 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
             if (d.xdelta > 0 && d2.xdelta < 0) {
               d.xdelta *= -1;
               d2.xdelta *= -1;
-              print("x: both");
+              print("x: both $d $d2");
             } else if ((d.xdelta > 0 &&
                     d2.xdelta > 0 &&
                     d.xdelta > d2.xdelta) ||
                 (d.xdelta < 0 && d2.xdelta < 0 && d.xdelta < d2.xdelta)) {
-              print("x: d > d2");
+              print("x: $d > $d2");
               d.xdelta *= -1;
             } else if (d.xdelta > 0 && d2.xdelta > 0 && d.xdelta < d2.xdelta) {
-              print("x: d2 > d");
+              print("x: $d2 > $d");
               d2.xdelta *= -1;
             }
 
-            if ((d.ydelta > 0 && d2.ydelta > 0 && d.ydelta > d2.ydelta) ||
+            if (d.ydelta > 0 && d2.ydelta < 0) {
+              d.ydelta *= -1;
+              d2.ydelta *= -1;
+              print("y: both $d $d2");
+            } else if ((d.ydelta > 0 &&
+                    d2.ydelta > 0 &&
+                    d.ydelta > d2.ydelta) ||
                 (d.ydelta < 0 && d2.ydelta < 0 && d.ydelta < d2.ydelta)) {
-              print("y: d > d2");
+              print("y: $d > $d2");
               d.ydelta *= -1;
             } else if (d.ydelta > 0 && d2.ydelta > 0 && d.ydelta < d2.ydelta) {
-              print("y: d2 > d");
+              print("y: $d2 > $d");
               d2.ydelta *= -1;
             }
           }
         }
       });
+
+      if (d.left < 0) {
+        d.left = 0;
+        d.xdelta = d.xdelta.abs();
+      }
+
+      if (d.right > width) {
+        d.left = width - d.width;
+        d.xdelta = -d.xdelta.abs();
+      }
+
+      if (d.top < 0) {
+        d.top = 0;
+        d.ydelta = d.ydelta.abs();
+      }
+
+      if (d.bottom > height) {
+        d.top = height - d.height;
+        d.ydelta = -d.ydelta.abs();
+      }
     });
 
     if (!accelerated) {
