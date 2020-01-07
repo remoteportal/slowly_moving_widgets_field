@@ -1,15 +1,24 @@
 # slowing_moving_widgets_field
 
-Pass in a list of arbitrary widgets and the slowing_moving_widgets_field widget moves them around the screen, like the old asteroids video game
+Pass in a list of arbitrary widgets and the slowing_moving_widgets_field widget moves them around the screen, like the old asteroids video game.
 
-if collisionAmount is null then widgets float on top of each other (DON'T bounce)
-if collisionAmount is non-null then widgets will bounce when they hit each other (collision detection).  But, this is buggy (see below)
+If collisionAmount is null then widgets float on top of each other (DON'T bounce).
+
+If collisionAmount is non-null then widgets will bounce when they hit each other (collision detection).  But, this is buggy (see below).
  
-Returns a Stack() which contains all the "magic"
+Returns a Stack() which contains all the "magic."
+
+
+# Example
+![Screenshot](example.webm)
 
 
 # TODO
-- parameterize background
+- specify background
+- specify a slight amount of randomness on every impact
+- specify how much overlap (positive or negative) to allow before bounce
+- specify speed
+- specify "soft bounce" mode that causes close widgets to repel off of each other rather than instantaneous bounce
 
 
 # Bugs

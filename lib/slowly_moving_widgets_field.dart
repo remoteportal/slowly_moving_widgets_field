@@ -10,12 +10,6 @@ final r = new Random();
 
 /*
  * Returns a Stack() which contains all the "magic."
- *
- * TODO:
- * - add a configurable amount of slight random on every impact
- * - specify how much overlap to allow before bounce
- * - perhaps allow some to float over others
- * - specify speed
  */
 class SlowlyMovingWidgetsField extends StatefulWidget {
   final List<Moving> list;

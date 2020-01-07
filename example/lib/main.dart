@@ -55,6 +55,7 @@ class _MyAppState extends State<MyApp> {
       colorRotate++;
       colorRotate %= 3;
 
+      // wrap each of your widgets in a "Moving" container
       list.add(Moving(
         child: Container(
             child: Text("$i", style: TextStyle(fontSize: 40)),
