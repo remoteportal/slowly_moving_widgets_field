@@ -1,8 +1,7 @@
 name: slowly_moving_widgets_field
-description: Animated widgets slowly moving about, sometimes colliding and bouncing (like vintage "asteroids game"), for an interesting dynamic user interface for unusual menus, etc.
-version: 0.0.1
-author: Peter Alvin <github_public@onlyup.com>
-homepage: https://github.com/remoteportal/substring_highlight
+description: Your arbitrary widgets slowly moving about, sometimes colliding and bouncing (like vintage "asteroids game").
+version: 0.1.0
+homepage: https://github.com/remoteportal/slowly_moving_widgets_field
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -10,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  meta: ^1.1.8
 
 dev_dependencies:
   flutter_test:

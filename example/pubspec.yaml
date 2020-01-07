@@ -1,7 +1,6 @@
 name: example
-description: substring_highlight example
-
-version: 1.0.0+1
+description: slowly_moving_widgets_field example
+version: 1.0.0
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -9,13 +8,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-#  slowly_moving_widgets_field: 0.0.1
+#  slowly_moving_widgets_field: 0.0.1   # can't do because not published yet!
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  slowly_moving_widgets_field:
+  slowly_moving_widgets_field:          # interim until published
     path: ../
 
 flutter:
