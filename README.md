@@ -10,7 +10,7 @@ Returns a Stack() which contains all the "magic."
 
 
 # Example
-![Screenshot](example.webm)
+![Screenshot](example.gif)
 
 
 # TODO
@@ -36,7 +36,7 @@ Add a new dependency line to your project/pubspec.yaml file:
 ```yaml
 dependencies:
   ...
-  slowing_moving_widgets_field: 0.1.0      # use latest version!
+  slowing_moving_widgets_field: 0.1.2      # use latest version!
 ```
 
 Don't forget to *flutter pub get*

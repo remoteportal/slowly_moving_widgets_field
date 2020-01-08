@@ -6,11 +6,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-final r = new Random();
+final _r = new Random();
 
-/*
- * Returns a Stack() which contains all the "magic."
- */
+/// A widget that moves arbitrary widgets over a background space.
+///
+/// Implemented using a Stack() widget.
 class SlowlyMovingWidgetsField extends StatefulWidget {
   final List<Moving> list;
   final double collisionAmount;
@@ -23,36 +23,55 @@ class SlowlyMovingWidgetsField extends StatefulWidget {
       _SlowlyMovingWidgetsFieldState();
 }
 
+/// Wrapper for each user widget that moves.  Each user widget must be wrapped in a Container().
 class Moving {
   Moving({@required this.child, @required this.width, @required this.height})
       : assert(child != null),
         assert(width != null),
         assert(height != null);
 
+  /// User widget
   Container child;
+
+  /// Width of widget; used for collision detection
   double width;
+
+  /// Height of widget; used for collision detection
   double height;
+
+  /// x-position in field
   double left = -1;
+
+  /// y-position in field
   double top = -1;
+
+  /// amount of horizontal distance moved per tick; can be negative
   double xdelta;
+
+  /// amount of veritical distance moved per tick; can be negative
   double ydelta;
+
+  /// unique of each moving widget; only used for logging
   String id;
 
   double get right => left + width;
 
   double get bottom => top + height;
 
+  /// collision detection with another user widget
   bool hit(Moving d) {
     return (d.left > left && d.left < right ||
             d.right > left && d.right < right) &&
         (d.top > top && d.top < bottom || d.bottom > top && d.bottom < bottom);
   }
 
+  /// collision with horizontal movement
   bool hitx(Moving d) {
     return hit(d) && (d.xdelta > 0 && xdelta < 0 || xdelta > 0 && d.xdelta < 0);
 //    return false;
   }
 
+  /// collision with vertical movement
   bool hity(Moving d) {
     return hit(d) && (d.ydelta > 0 && ydelta < 0 || ydelta > 0 && d.ydelta < 0);
 //    return false;
@@ -84,6 +103,7 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
 
   @override
   Widget build(BuildContext context) {
+    // on first pass get screen dimensions and build list of moving widgets
     if (height < 0) {
 //      print("initialize: count=${widget.list.length}");
       width = MediaQuery.of(context).size.width;
@@ -96,9 +116,9 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
 //        print("placing moving #$i in field");
         Moving d = widget.list[i];
 
-        d.xdelta = (0.5 - (r.nextDouble() * 3)) /
+        d.xdelta = (0.5 - (_r.nextDouble() * 3)) /
             1; //TODO: ensure not too close to zero
-        d.ydelta = (0.5 - (r.nextDouble() * 0.5)) / 1;
+        d.ydelta = (0.5 - (_r.nextDouble() * 0.5)) / 1;
 
         int attempt = 0;
 
@@ -110,8 +130,8 @@ class _SlowlyMovingWidgetsFieldState extends State<SlowlyMovingWidgetsField> {
             longestRun = attempt;
           }
 
-          d.left = r.nextInt((width - d.width).toInt()).toDouble();
-          d.top = r.nextInt((height - d.height).toInt()).toDouble();
+          d.left = _r.nextInt((width - d.width).toInt()).toDouble();
+          d.top = _r.nextInt((height - d.height).toInt()).toDouble();
 
           bool add = true;
           if (widget.collisionAmount != null && list.length > 0) {

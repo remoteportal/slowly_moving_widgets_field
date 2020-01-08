@@ -1,6 +1,12 @@
 # Changelog
 
 
+## Version 0.1.2 (2020-01-08)
+
+- documentation
+
+
+
 ## Version 0.1.1 (2020-01-07)
 
 - cleanup
