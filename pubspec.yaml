@@ -1,6 +1,6 @@
 name: slowly_moving_widgets_field
 description: Your arbitrary widgets slowly moving about, sometimes colliding and bouncing (like vintage "asteroids game").
-version: 0.1.2
+version: 1.0.24    #NOEDIT
 homepage: https://github.com/remoteportal/slowly_moving_widgets_field
 
 environment:
