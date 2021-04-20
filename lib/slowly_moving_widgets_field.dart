@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 final _r = new Random();
 
@@ -13,10 +12,9 @@ final _r = new Random();
 /// Implemented using a Stack() widget.
 class SlowlyMovingWidgetsField extends StatefulWidget {
   final List<Moving> list;
-  final double collisionAmount;
+  final double? collisionAmount;
 
-  SlowlyMovingWidgetsField({@required this.list, this.collisionAmount})
-      : assert(list != null);
+  SlowlyMovingWidgetsField({required this.list, this.collisionAmount});
 
   @override
   _SlowlyMovingWidgetsFieldState createState() =>
@@ -25,10 +23,7 @@ class SlowlyMovingWidgetsField extends StatefulWidget {
 
 /// Wrapper for each user widget that moves.  Each user widget must be wrapped in a Container().
 class Moving {
-  Moving({@required this.child, @required this.width, @required this.height})
-      : assert(child != null),
-        assert(width != null),
-        assert(height != null);
+  Moving({required this.child, required this.width, required this.height});
 
   /// User widget
   Container child;
@@ -46,13 +41,13 @@ class Moving {
   double top = -1;
 
   /// amount of horizontal distance moved per tick; can be negative
-  double xdelta;
+  late double xdelta;
 
   /// amount of veritical distance moved per tick; can be negative
-  double ydelta;
+  late double ydelta;
 
   /// unique of each moving widget; only used for logging
-  String id;
+  String? id;
 
   double get right => left + width;
 

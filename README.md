@@ -2,11 +2,11 @@
 
 Pass in a list of arbitrary widgets and the slowing_moving_widgets_field widget moves them around the screen, like the old asteroids video game.
 
-If collisionAmount is null then widgets float on top of each other (DON'T bounce).
+If collisionAmount is null then widgets float on top of each other (don't bounce).
 
 If collisionAmount is non-null then widgets will bounce when they hit each other (collision detection).  But, this is buggy (see below).
  
-Returns a Stack() which contains all the "magic."
+Returns a Stack() where the magic happens! (homage to "Wayne's World")
 
 
 # Example

@@ -1,15 +1,14 @@
 name: slowly_moving_widgets_field
-description: Your arbitrary widgets slowly moving about, sometimes colliding and bouncing (like vintage "asteroids game").
-version: 1.0.26        #NOEDIT
+description: Your arbitrary widgets slowly moving about, sometimes colliding and bouncing (like the vintage "asteroids game").
+version: 1.0.27        #NOEDIT
 homepage: https://github.com/remoteportal/slowly_moving_widgets_field
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  meta: ^1.3.0
 
 dev_dependencies:
   flutter_test:
