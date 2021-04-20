@@ -6,7 +6,7 @@ If collisionAmount is null then widgets float on top of each other (don't bounce
 
 If collisionAmount is non-null then widgets will bounce when they hit each other (collision detection).  But, this is buggy (see below).
  
-Returns a Stack() where the magic happens! (homage to "Wayne's World")
+Returns a Stack() object.  This is where the magic happens! (homage to "Wayne's World")
 
 
 # Example
@@ -36,7 +36,7 @@ Add a new dependency line to your project/pubspec.yaml file:
 ```yaml
 dependencies:
   ...
-  slowing_moving_widgets_field: 0.1.2      # use latest version!
+  slowing_moving_widgets_field: 1.0.28      # use latest version!
 ```
 
 Don't forget to *flutter pub get*

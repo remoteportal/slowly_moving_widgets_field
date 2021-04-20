@@ -1,7 +1,7 @@
 # Changelog
 
 
-## Version 2.1.2 (2021-04-20)
+## Version 1.0.28 (2021-04-20)
 
 - upgraded to Dart 2.0
 - migrated to null-safety
